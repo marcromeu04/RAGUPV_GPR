@@ -1,20 +1,29 @@
-# Advanced RAG Calculator - RAG con Capacidades de Agente
+# RAG UPV Avanzado - Sistema Inteligente de Análisis de Datos
 
-Sistema RAG avanzado que combina recuperación de información con capacidades de cálculo, análisis estadístico y generación de visualizaciones usando Claude de Anthropic.
+Sistema RAG (Retrieval-Augmented Generation) avanzado que accede a los datos abiertos de la UPV con capacidades de agente inteligente usando Groq.
 
 ## 🚀 Características
 
-- **📚 RAG (Retrieval-Augmented Generation)**: Búsqueda semántica en documentos usando ChromaDB
-- **🧮 Calculadora Avanzada**: Ejecución de expresiones matemáticas complejas
-- **💻 Ejecución de Código**: Ejecuta código Python para análisis personalizado
-- **📊 Visualizaciones**: Genera gráficos (línea, barras, dispersión, histogramas, etc.)
-- **📈 Análisis Estadístico**: Estadística descriptiva, correlación, regresión, tests
-- **🤖 Agente Inteligente**: Orquesta herramientas usando function calling de Claude
+### 📊 Acceso a Datos
+- **UPV Transparent API**: Conexión directa a datos abiertos de la Universitat Politècnica de València
+- **Búsqueda Semántica**: FAISS + SentenceTransformers para encontrar datasets relevantes
+- **Carga Automática**: Soporte para CSV y Excel
+
+### 🤖 Agente Inteligente
+- **Groq LLM**: Llama 3.1 70B con function calling
+- **Razonamiento**: Decide automáticamente qué herramientas usar
+- **Conversacional**: Entiende preguntas en lenguaje natural en español
+
+### 🧮 Capacidades Avanzadas
+- **Calculadora Matemática**: Evalúa expresiones con numpy, scipy
+- **Análisis Estadístico**: Descriptivo, correlaciones, resúmenes
+- **Visualizaciones**: Line, bar, scatter, histogram, box, heatmap
+- **Ejecución de Código**: Python personalizado para análisis avanzados
 
 ## 📋 Requisitos
 
-- Python 3.11+
-- API Key de Anthropic
+- Python 3.8+
+- API Key de Groq (gratuita en https://console.groq.com)
 - Jupyter Notebook
 
 ## 🔧 Instalación
@@ -30,219 +39,313 @@ cd RAGUPV_GPR
 pip install -r requirements.txt
 ```
 
-3. Configura tu API Key de Anthropic:
-```bash
-export ANTHROPIC_API_KEY="tu-api-key-aqui"
-```
-
-O directamente en el notebook editando la variable `ANTHROPIC_API_KEY`.
+3. La API key de Groq ya está configurada en el notebook, o puedes usar la tuya propia.
 
 ## 🎯 Uso
 
-### Modo Notebook
+### Iniciar el Notebook
 
-1. Abre el notebook:
 ```bash
-jupyter notebook advanced_rag_calculator.ipynb
+jupyter notebook rag_upv_advanced.ipynb
 ```
 
-2. Ejecuta las celdas secuencialmente para:
-   - Instalar dependencias
-   - Inicializar el sistema RAG
-   - Cargar documentos de ejemplo
-   - Probar ejemplos de uso
+### Ejecutar las Celdas
 
-### Ejemplos Rápidos
+1. **Instalar dependencias**: Ejecuta la primera celda
+2. **Cargar datos**: Ejecuta las celdas de configuración
+3. **Hacer preguntas**: Usa el agente para consultas
 
-#### Cálculos Matemáticos
+### Ejemplos de Preguntas
+
+#### Búsqueda de Datasets
 ```python
-agent.chat("Calcula la raíz cuadrada de 144 multiplicada por el promedio de 10, 20, 30, 40, 50")
+agent.query("¿Qué datos hay sobre estudiantes en la UPV?")
 ```
 
 #### Análisis Estadístico
 ```python
-agent.chat("Analiza estadísticamente estos datos: [45, 52, 61, 68, 75] y dame media, mediana y desviación estándar")
+agent.query("""
+Busca datos sobre presupuesto de la UPV,
+carga el dataset y muéstrame estadísticas descriptivas
+""")
 ```
 
-#### Crear Visualizaciones
+#### Visualizaciones
 ```python
-agent.chat("Crea un gráfico de barras con ventas mensuales: Enero=45000, Febrero=52000, Marzo=61000")
+agent.query("""
+Encuentra datos de matriculaciones,
+carga el dataset y crea un gráfico mostrando la evolución
+""")
 ```
 
-#### Búsqueda en Documentos
+#### Cálculos Personalizados
 ```python
-agent.chat("¿Cuáles son las ventas totales del Q1 2024 según los documentos?")
+agent.query("""
+Busca datos sobre investigación en la UPV.
+Carga el dataset y calcula:
+1. El promedio de proyectos por año
+2. La desviación estándar
+3. El crecimiento porcentual
+""")
 ```
 
-#### Análisis Complejo
+#### Análisis con Código Python
 ```python
-agent.chat("""
-Analiza estos datos de ventas y marketing:
-- Ventas: [45, 52, 61, 68, 75]
-- Marketing: [10, 15, 20, 25, 30]
-
-1. Calcula la correlación
-2. Crea un modelo de regresión
-3. Genera un gráfico de dispersión con línea de tendencia
-4. Dame el ROI promedio
+agent.query("""
+Busca datos de personal de la UPV.
+Carga el dataset y ejecuta código Python para:
+- Filtrar solo docentes
+- Agrupar por departamento
+- Contar y mostrar los 5 departamentos con más personal
 """)
 ```
 
 ## 🛠️ Herramientas Disponibles
 
-El agente tiene acceso a las siguientes herramientas:
+El agente tiene acceso a 6 herramientas:
 
-### 1. **calculator**
-Evalúa expresiones matemáticas complejas con acceso a NumPy y SciPy.
-
-```python
-agent.chat("Calcula: np.sqrt(144) + np.mean([1,2,3,4,5])")
-```
-
-### 2. **execute_python**
-Ejecuta código Python arbitrario para análisis personalizado.
+### 1. `search_upv_datasets`
+Busca datasets relevantes de UPV Transparent basado en consulta semántica.
 
 ```python
-agent.chat("""
-Ejecuta un código que genere 100 números aleatorios,
-calcule cuántos son mayores a 50 y su promedio.
-""")
+# Ejemplo interno
+search_upv_datasets(query="estudiantes", k=3)
 ```
 
-### 3. **create_visualization**
+### 2. `load_dataset`
+Carga datos reales de un dataset específico.
+
+```python
+# Ejemplo interno
+load_dataset(dataset_id="estudiantes-matriculados", rows=5)
+```
+
+### 3. `calculator`
+Ejecuta cálculos matemáticos y estadísticos.
+
+```python
+# Ejemplo interno
+calculator(expression="np.mean([10, 20, 30]) + np.sqrt(144)")
+```
+
+### 4. `analyze_dataset`
+Realiza análisis estadístico de datasets.
+
+Tipos:
+- `descriptive`: Estadísticas descriptivas
+- `correlation`: Matriz de correlación
+- `summary`: Resumen de estructura
+
+```python
+# Ejemplo interno
+analyze_dataset(dataset_id="presupuesto", analysis_type="descriptive")
+```
+
+### 5. `create_visualization`
 Genera visualizaciones de datos.
 
-Tipos soportados:
+Tipos de gráficos:
 - `line`: Gráfico de línea
 - `bar`: Gráfico de barras
-- `scatter`: Diagrama de dispersión
+- `scatter`: Dispersión
 - `histogram`: Histograma
 - `box`: Diagrama de caja
 - `heatmap`: Mapa de calor
-- `pie`: Gráfico circular
 
-### 4. **statistical_analysis**
-Realiza análisis estadístico.
+```python
+# Ejemplo interno
+create_visualization(
+    dataset_id="matriculas",
+    chart_type="line",
+    x_column="año",
+    y_column="total",
+    title="Evolución de Matrículas"
+)
+```
 
-Tipos soportados:
-- `descriptive`: Estadística descriptiva
-- `correlation`: Análisis de correlación
-- `regression`: Regresión lineal
-- `t_test`: Test t de Student
-- `anova`: Análisis de varianza
+### 6. `execute_python`
+Ejecuta código Python personalizado.
 
-### 5. **search_documents**
-Busca información en documentos cargados usando búsqueda semántica.
+```python
+# Ejemplo interno
+execute_python(code="""
+filtered = df[df['tipo'] == 'docente']
+result = filtered.groupby('departamento').size().nlargest(5)
+""")
+```
 
 ## 📁 Estructura del Proyecto
 
 ```
 RAGUPV_GPR/
-├── advanced_rag_calculator.ipynb  # Notebook principal
-├── requirements.txt               # Dependencias
-└── README.md                     # Documentación
+├── rag_upv_advanced.ipynb        # Notebook principal mejorado
+├── advanced_rag_calculator.ipynb # Notebook genérico (opcional)
+├── requirements.txt              # Dependencias
+├── README.md                     # Documentación
+├── .gitignore                   # Archivos ignorados
+└── .env.example                 # Template de configuración
 ```
 
 ## 🔍 Cómo Funciona
 
-1. **Inicialización**: Se crea un cliente de Anthropic y una base de datos vectorial ChromaDB
-2. **Carga de Documentos**: Los documentos se vectorizan y almacenan en ChromaDB
-3. **Procesamiento de Consultas**:
-   - El usuario hace una pregunta
-   - El agente decide qué herramientas usar (function calling)
-   - Ejecuta las herramientas necesarias
-   - Procesa los resultados y genera una respuesta
+### Flujo de Trabajo
 
-## 🎨 Ejemplos de Casos de Uso
+1. **Usuario hace pregunta** en lenguaje natural
+2. **Agente analiza** y decide qué herramientas necesita
+3. **Búsqueda semántica** encuentra datasets relevantes
+4. **Carga datos** del dataset seleccionado
+5. **Aplica análisis/visualización** según la pregunta
+6. **Presenta resultados** de forma clara en español
 
-### Análisis de Ventas
+### Arquitectura
+
+```
+┌─────────────┐
+│   Usuario   │
+└──────┬──────┘
+       │ Pregunta
+       ▼
+┌─────────────────┐
+│  Groq (Llama)   │ ◄── Function Calling
+│   LLM Agent     │
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    │  Tools  │
+    └────┬────┘
+         │
+    ┌────┴────────────────────┐
+    │                         │
+┌───▼────┐           ┌───────▼────────┐
+│ FAISS  │           │  UPV Datasets  │
+│ Search │           │    (API)       │
+└───┬────┘           └───────┬────────┘
+    │                        │
+    └────────┬───────────────┘
+             │
+       ┌─────▼──────┐
+       │  Analysis  │
+       │ & Visuals  │
+       └────────────┘
+```
+
+## 🎨 Ejemplos Avanzados
+
+### Análisis Comparativo
 ```python
-# Cargar datos
-rag.add_document("""
-Ventas Q1:
-- Enero: $45,000
-- Febrero: $52,000
-- Marzo: $61,000
+agent.query("""
+Compara los datos de estudiantes de grado vs máster.
+Carga ambos datasets, calcula estadísticas y crea un gráfico comparativo.
 """)
-
-# Analizar
-agent.chat("Analiza las ventas de Q1 y muéstrame un gráfico de tendencia")
 ```
 
-### Análisis Financiero
+### Dashboard Estadístico
 ```python
-agent.chat("""
-Tengo estos datos de inversión y retornos:
-Inversión: [1000, 1500, 2000, 2500]
-Retornos: [1200, 1900, 2500, 3200]
-
-Calcula el ROI de cada inversión, el ROI promedio,
-y crea un gráfico mostrando la relación.
+agent.query("""
+Para el dataset de investigación:
+1. Muéstrame estadísticas descriptivas
+2. Crea un histograma de distribución
+3. Calcula la correlación entre variables numéricas
+4. Genera un heatmap de correlaciones
 """)
 ```
 
-### Análisis Científico
+### Análisis Temporal
 ```python
-agent.chat("""
-Tengo estos datos experimentales:
-Grupo A: [23, 25, 27, 24, 26]
-Grupo B: [30, 32, 31, 33, 29]
-
-Realiza un t-test para verificar si hay diferencia significativa
-y muestra un box plot comparativo.
+agent.query("""
+Analiza la evolución del presupuesto de investigación:
+- Carga los datos históricos
+- Calcula la tasa de crecimiento anual
+- Predice tendencia con regresión
+- Visualiza con gráfico de línea
 """)
 ```
 
-## 📊 Funciones Auxiliares
+## 🚦 Modo Interactivo
 
-El notebook incluye funciones de acceso rápido:
-
-```python
-# Cálculo rápido
-quick_calc("np.sqrt(144) + 10")
-
-# Visualización rápida
-quick_viz({'x': [1,2,3], 'y': [4,5,6]}, chart_type='line', title='Mi Gráfico')
-
-# Estadísticas rápidas
-quick_stats([10, 20, 30, 40, 50])
-
-# Búsqueda en documentos
-ask_documents("¿Cuáles son las ventas totales?")
-```
-
-## 🔄 Modo Interactivo
-
-El notebook incluye un modo interactivo para chatear con el agente:
+El notebook incluye un modo interactivo para sesiones conversacionales:
 
 ```python
 interactive_mode()
 ```
 
-Comandos especiales:
-- `/reset`: Reiniciar conversación
-- `/docs`: Ver documentos cargados
-- `/add`: Agregar nuevo documento
-- `/exit`: Salir
+Comandos disponibles:
+- Pregunta normal: Escribe tu consulta
+- `salir` o `exit`: Terminar sesión
+- `clear`: Limpiar cache de datasets
 
-## 🧪 Testing
+## 📊 Datasets Disponibles
 
-Ejecuta los ejemplos en las celdas del notebook para probar las diferentes capacidades:
+Los datos provienen de **UPV Transparent**, que incluye información sobre:
 
-1. **Ejemplo 1**: Cálculos matemáticos
-2. **Ejemplo 2**: Análisis estadístico con RAG
-3. **Ejemplo 3**: Creación de visualizaciones
-4. **Ejemplo 4**: Análisis complejo multi-herramienta
-5. **Ejemplo 5**: Ejecución de código Python
-6. **Ejemplo 6**: Correlación y regresión
+- 👨‍🎓 Estudiantes y matrícula
+- 💰 Presupuesto y finanzas
+- 🔬 Investigación y proyectos
+- 👥 Personal (PDI, PAS)
+- 📚 Publicaciones científicas
+- 🏛️ Infraestructuras y campus
+- 📈 Indicadores y rankings
+
+## ⚡ Funciones de Acceso Rápido
+
+Para consultas frecuentes:
+
+```python
+# Búsqueda rápida
+quick_search("estudiantes doctorado")
+
+# Análisis rápido
+quick_analyze("presupuesto investigacion")
+
+# Visualización rápida
+quick_viz("matriculas", chart_type="bar")
+```
+
+## 🔐 Configuración de API Key
+
+### Opción 1: En el notebook (actual)
+La API key ya está configurada en el código.
+
+### Opción 2: Variable de entorno
+```bash
+export GROQ_API_KEY="tu-api-key"
+```
+
+### Opción 3: Archivo .env
+Copia `.env.example` a `.env` y configura:
+```
+GROQ_API_KEY=tu-api-key-aqui
+```
+
+## 📈 Casos de Uso
+
+### 1. Análisis Académico
+- Evolución de matrícula por carreras
+- Tasas de graduación
+- Distribución de estudiantes internacionales
+
+### 2. Gestión Financiera
+- Análisis de presupuesto por departamentos
+- ROI de proyectos de investigación
+- Tendencias de financiación
+
+### 3. Investigación
+- Productividad científica
+- Análisis de publicaciones
+- Colaboraciones internacionales
+
+### 4. Recursos Humanos
+- Distribución de personal
+- Ratios estudiante/profesor
+- Análisis demográfico
 
 ## 🤝 Contribuir
 
-¡Las contribuciones son bienvenidas! Por favor:
+¡Las contribuciones son bienvenidas!
 
 1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+2. Crea una rama (`git checkout -b feature/AmazingFeature`)
+3. Commit cambios (`git commit -m 'Add AmazingFeature'`)
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
@@ -252,8 +355,10 @@ Este proyecto está bajo la licencia MIT.
 
 ## 🙏 Agradecimientos
 
-- [Anthropic](https://www.anthropic.com/) por Claude API
-- [ChromaDB](https://www.trychroma.com/) por la base de datos vectorial
+- **Groq** por proporcionar acceso a Llama 3.1
+- **UPV** por los datos abiertos a través de UPV Transparent
+- **FAISS** (Facebook AI) por la búsqueda vectorial
+- **Sentence Transformers** por los embeddings
 - Comunidad de Python y Data Science
 
 ## 📧 Contacto
@@ -264,26 +369,65 @@ Project Link: [https://github.com/marcromeu04/RAGUPV_GPR](https://github.com/mar
 
 ## 🔮 Roadmap
 
-- [ ] Soporte para múltiples tipos de archivos (PDF, CSV, Excel)
-- [ ] Integración con más modelos de visualización (Plotly interactivo)
-- [ ] Cache de resultados para consultas frecuentes
-- [ ] API REST para uso como servicio
-- [ ] Interfaz web con Streamlit/Gradio
-- [ ] Soporte para bases de datos SQL
-- [ ] Exportación de análisis a PDF/Word
-- [ ] Integración con herramientas de BI
+- [x] Sistema RAG básico con UPV datos
+- [x] Function calling con Groq
+- [x] Calculadora y análisis estadístico
+- [x] Visualizaciones automáticas
+- [x] Ejecución de código Python
+- [ ] Soporte para más formatos (JSON, XML)
+- [ ] Cache persistente de datasets
+- [ ] Análisis de series temporales avanzado
+- [ ] Exportación de reportes (PDF, HTML)
+- [ ] Interfaz web con Streamlit
+- [ ] Comparación multi-dataset
+- [ ] Alertas y notificaciones
+- [ ] Integración con bases de datos SQL
 
 ## ⚠️ Notas Importantes
 
-- **API Key**: Necesitas una API key válida de Anthropic
-- **Costos**: El uso de la API de Claude tiene costos asociados
-- **Seguridad**: El código Python se ejecuta con `eval()` - usa con precaución en producción
-- **Límites**: Respeta los rate limits de la API de Anthropic
+- **API de Groq**: Gratuita con límites de uso (consulta https://console.groq.com)
+- **Datos UPV**: Los datasets se cargan en tiempo real desde la API
+- **Cache**: Los datasets se cachean en memoria durante la sesión
+- **Performance**: Primera carga puede tardar (generando embeddings)
+- **Privacidad**: No se envían datos sensibles, solo metadatos públicos
+
+## 🐛 Resolución de Problemas
+
+### Error de conexión a UPV API
+```python
+# Verificar conectividad
+import requests
+requests.get("https://upvtransparent.upv.es/api/3/action/package_list")
+```
+
+### Error cargando datasets
+- Algunos datasets pueden no estar en formato CSV/Excel
+- Verifica el formato con `search_upv_datasets`
+
+### Embeddings lentos
+- Primera ejecución genera embeddings (puede tardar)
+- Ejecuciones posteriores usan cache
+
+### Límites de Groq
+- Respeta rate limits de la API
+- Reduce `max_iterations` si es necesario
+
+## 💡 Tips y Trucos
+
+1. **Preguntas específicas**: Sé específico en tus consultas
+2. **Iterar**: Si no obtienes el resultado, reformula la pregunta
+3. **Explorar**: Usa `search_upv_datasets` para ver qué hay disponible
+4. **Combinar**: Puedes pedir múltiples análisis en una consulta
+5. **Código personalizado**: Para análisis muy específicos, pide ejecución de código Python
 
 ## 📚 Recursos Adicionales
 
-- [Documentación de Claude](https://docs.anthropic.com/)
-- [ChromaDB Docs](https://docs.trychroma.com/)
-- [Pandas Documentation](https://pandas.pydata.org/docs/)
-- [Matplotlib Gallery](https://matplotlib.org/stable/gallery/)
-- [Seaborn Tutorial](https://seaborn.pydata.org/tutorial.html)
+- [Documentación Groq](https://console.groq.com/docs)
+- [UPV Transparent](https://upvtransparent.upv.es/)
+- [FAISS Documentation](https://faiss.ai/)
+- [Sentence Transformers](https://www.sbert.net/)
+- [Pandas Documentation](https://pandas.pydata.org/)
+
+---
+
+**Desarrollado con ❤️ para la comunidad UPV**
